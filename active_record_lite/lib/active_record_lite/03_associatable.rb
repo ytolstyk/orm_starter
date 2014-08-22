@@ -20,13 +20,34 @@ end
 
 class BelongsToOptions < AssocOptions
   def initialize(name, options = {})
-    # ...
+    define_method(name) do
+      @foreign_key = options[:foreign_key]
+      @primary_key = options[:primary_key]
+      @class_name = options[:class_name]
+
+      @primary_key ||= :id
+      @foreign_key ||= (@class_name.to_s.downcase.singularize + "_id").to_sym
+
+
+      query = <<-SQL
+      SELECT
+      *
+      FROM
+      #{@class_name.table_name}
+      WHERE
+      #{@primary_key} = ?
+      SQL
+
+      value = send(@foreign_key)
+
+      DBconnection.execute(query, value)
+    end
   end
 end
 
 class HasManyOptions < AssocOptions
   def initialize(name, self_class_name, options = {})
-    # ...
+    
   end
 end
 
@@ -47,4 +68,5 @@ end
 
 class SQLObject
   # Mixin Associatable here...
+  extend Associatable
 end
