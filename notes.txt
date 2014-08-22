@@ -1,0 +1,2 @@
+Macro:
+  class method that helps define instance methods
