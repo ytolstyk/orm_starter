@@ -24,7 +24,7 @@ class BelongsToOptions < AssocOptions
     @primary_key = options[:primary_key]
     @class_name = options[:class_name]
 
-    @class_name ||= name.singularize.capitalize
+    @class_name ||= name.to_s.singularize.camelcase
     @primary_key ||= :id
     @foreign_key ||= ("#{@class_name.to_s.downcase.singularize}_id").to_sym
     @name = name
@@ -39,7 +39,7 @@ class HasManyOptions < AssocOptions
     @primary_key = options[:primary_key]
     @class_name = options[:class_name]
 
-    @class_name ||= name.singularize.capitalize
+    @class_name ||= name.to_s.singularize.camelcase
     #@self_class_name ||= self
     @primary_key ||= :id
     @foreign_key ||= ("#{@self_class_name.to_s.downcase.singularize}_id").to_sym
@@ -54,7 +54,7 @@ module Associatable
       SELECT
       *
       FROM
-      #{@class_name.table_name}
+      #{table_name}
       WHERE
       #{@primary_key} = ?
       SQL
@@ -71,7 +71,7 @@ module Associatable
       SELECT
       *
       FROM
-      #{@self_class_name.table_name}
+      #{table_name}
       WHERE
       #{@foreign_key} = ?
       SQL
